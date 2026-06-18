@@ -48,4 +48,28 @@ class PostViewModel(aplicacao: Application) : AndroidViewModel(aplicacao) {
         }
     }
 
+
+    fun carregarDetalhesDoPost(postId: Int) {
+        viewModelScope.launch {
+            _carregando.value = true
+            _mensagemErro.value = null
+            try {
+                val comentariosLocais = dao.buscarComentariosDoPost(postId)
+                val comentariosDaApi = api.buscarComentarios(postId)
+                val listaUnida = mutableListOf<ComentarioTela>()
+                comentariosLocais.forEach { local ->
+                    listaUnida.add(ComentarioTela(autor = "Você(Comentario Local)", texto = local.texto))
+                }
+                comentariosDaApi.forEach { remoto ->
+                    listaUnida.add(ComentarioTela(autor = remoto.email, texto = remoto.body))
+                }
+                _listaDeComentarios.value = listaUnida
+            } catch (e: Exception) {
+                _mensagemErro.value = "Erro ao carregar os comentários."
+            } finally {
+                _carregando.value = false
+            }
+        }
+    }
+
 }
