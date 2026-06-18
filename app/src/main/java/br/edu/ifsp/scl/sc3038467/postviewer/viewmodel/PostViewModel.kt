@@ -2,6 +2,7 @@ package br.edu.ifsp.scl.sc3038467.postviewer.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import br.edu.ifsp.scl.sc3038467.postviewer.data.AppBancoDeDados
 import br.edu.ifsp.scl.sc3038467.postviewer.data.ClienteRetrofit
 import br.edu.ifsp.scl.sc3038467.postviewer.model.ComentarioTela
@@ -9,6 +10,7 @@ import br.edu.ifsp.scl.sc3038467.postviewer.model.Post
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class PostViewModel(aplicacao: Application) : AndroidViewModel(aplicacao) {
 
@@ -26,5 +28,24 @@ class PostViewModel(aplicacao: Application) : AndroidViewModel(aplicacao) {
 
     private val _mensagemErro = MutableStateFlow<String?>(null)
     val mensagemErro: StateFlow<String?> = _mensagemErro.asStateFlow()
+
+    init {
+        carregarPosts()
+    }
+
+    private fun carregarPosts() {
+        viewModelScope.launch {
+            _carregando.value = true
+            _mensagemErro.value = null
+            try {
+                val postsDaApi = api.buscarPosts()
+                _listaDePosts.value = postsDaApi
+            } catch (e: Exception) {
+                _mensagemErro.value = "Erro ao carregar os posts"
+            } finally {
+                _carregando.value = false
+            }
+        }
+    }
 
 }
