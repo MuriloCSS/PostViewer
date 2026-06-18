@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import br.edu.ifsp.scl.sc3038467.postviewer.data.AppBancoDeDados
 import br.edu.ifsp.scl.sc3038467.postviewer.data.ClienteRetrofit
+import br.edu.ifsp.scl.sc3038467.postviewer.data.ComentarioLocal
 import br.edu.ifsp.scl.sc3038467.postviewer.model.ComentarioTela
 import br.edu.ifsp.scl.sc3038467.postviewer.model.Post
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,6 +70,17 @@ class PostViewModel(aplicacao: Application) : AndroidViewModel(aplicacao) {
             } finally {
                 _carregando.value = false
             }
+        }
+    }
+
+    fun adicionarComentarioLocal(postId: Int, textoDigitado: String) {
+        if (textoDigitado.isBlank()) return
+
+        viewModelScope.launch {
+            val novoComentario = ComentarioLocal(postId = postId, texto = textoDigitado)
+            dao.salvarComentario(novoComentario)
+
+            carregarDetalhesDoPost(postId)
         }
     }
 
