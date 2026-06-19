@@ -59,10 +59,10 @@ class PostViewModel(aplicacao: Application) : AndroidViewModel(aplicacao) {
                 val comentariosDaApi = api.buscarComentarios(postId)
                 val listaUnida = mutableListOf<ComentarioTela>()
                 comentariosLocais.forEach { local ->
-                    listaUnida.add(ComentarioTela(autor = "Você(Comentario Local)", texto = local.texto))
+                    listaUnida.add(ComentarioTela(titulo = "Comentário Local", autor = "Você", texto = local.texto))
                 }
                 comentariosDaApi.forEach { remoto ->
-                    listaUnida.add(ComentarioTela(autor = remoto.email, texto = remoto.body))
+                    listaUnida.add(ComentarioTela(titulo = remoto.name, autor = remoto.email, texto = remoto.body))
                 }
                 _listaDeComentarios.value = listaUnida
             } catch (e: Exception) {

@@ -17,5 +17,6 @@ data class Comment(
 
 data class ComentarioTela(
     val autor: String,
-    val texto: String
+    val texto: String,
+    val titulo: String
 )

@@ -157,6 +157,7 @@ fun TelaDetalhesPost(viewModel: PostViewModel, postId: Int, aoVoltar: () -> Unit
             items(comentarios) { comentario ->
                 Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
+                        Text(text = comentario.titulo, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         Text(text = comentario.autor, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(text = comentario.texto)
