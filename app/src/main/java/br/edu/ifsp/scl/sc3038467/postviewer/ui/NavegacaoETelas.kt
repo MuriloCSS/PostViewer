@@ -12,6 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import br.edu.ifsp.scl.sc3038467.postviewer.viewmodel.PostViewModel
 
 
@@ -150,6 +154,28 @@ fun TelaDetalhesPost(viewModel: PostViewModel, postId: Int, aoVoltar: () -> Unit
 
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun AppNavegacao(viewModel: PostViewModel = viewModel()) {
+    val controleNavegacao = rememberNavController()
+
+    NavHost(navController = controleNavegacao, startDestination = "tela_lista") {
+        composable("tela_lista") {
+            TelaListaPosts(viewModel) { postId ->
+                controleNavegacao.navigate("tela_detalhes/$postId")
+            }
+        }
+        composable("tela_detalhes/{postId}") { backStackEntry ->
+            val postIdString = backStackEntry.arguments?.getString("postId") ?: "1"
+            TelaDetalhesPost(
+                viewModel,
+                postIdString.toInt()
+            ) {
+                controleNavegacao.popBackStack()
             }
         }
     }
