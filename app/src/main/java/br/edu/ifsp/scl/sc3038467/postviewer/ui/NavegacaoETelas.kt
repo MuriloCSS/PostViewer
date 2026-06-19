@@ -78,6 +78,11 @@ fun TelaListaPosts(viewModel: PostViewModel, aoClicarNoPost: (Int) -> Unit) {
                             text = post.body,
                             style = MaterialTheme.typography.bodyMedium
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Comentários: ${post.quantidadeComentarios}",
+                            fontWeight = FontWeight.Bold
+                        )
 
                     }
                 }

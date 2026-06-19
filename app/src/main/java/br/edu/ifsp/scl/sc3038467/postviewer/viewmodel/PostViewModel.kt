@@ -40,7 +40,13 @@ class PostViewModel(aplicacao: Application) : AndroidViewModel(aplicacao) {
             _mensagemErro.value = null
             try {
                 val postsDaApi = api.buscarPosts()
-                _listaDePosts.value = postsDaApi
+                val comentariosApi = api.buscarTodosComentarios()
+                val mapaApi = comentariosApi.groupBy { it.postId }
+                val postsAtualizados = postsDaApi.map { post ->
+                    val total = (mapaApi[post.id]?.size ?: 0)
+                    post.copy(quantidadeComentarios = total)
+                }
+                _listaDePosts.value = postsAtualizados
             } catch (e: Exception) {
                 _mensagemErro.value = "Erro ao carregar os posts"
             } finally {

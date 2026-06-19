@@ -13,6 +13,9 @@ interface ApiService {
 
     @GET("posts/{id}/comments")
     suspend fun buscarComentarios(@Path("id") postId: Int): List<Comment>
+
+    @GET("comments")
+    suspend fun buscarTodosComentarios(): List<Comment>
 }
 
 
