@@ -71,3 +71,86 @@ fun TelaListaPosts(viewModel: PostViewModel, aoClicarNoPost: (Int) -> Unit) {
         }
     }
 }
+
+@Composable
+fun TelaDetalhesPost(viewModel: PostViewModel, postId: Int, aoVoltar: () -> Unit) {
+    val comentarios by viewModel.listaDeComentarios.collectAsState()
+    val carregando by viewModel.carregando.collectAsState()
+    val erro by viewModel.mensagemErro.collectAsState()
+    var textoDigitado by remember { mutableStateOf("") }
+
+    LaunchedEffect(postId) {
+        viewModel.carregarDetalhesDoPost(postId)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Comentários do Post $postId",
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Button(
+            onClick = aoVoltar,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text("Voltar")
+        }
+        if (carregando) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+        erro?.let { textoErro ->
+            Text(
+                text = textoErro,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+
+        Row(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+            OutlinedTextField(
+                value = textoDigitado,
+                onValueChange = { textoDigitado = it },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                onClick = {
+                    viewModel.adicionarComentarioLocal(postId, textoDigitado)
+                    textoDigitado = ""
+                },
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Text("Salvar")
+            }
+        }
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(comentarios) { comentario ->
+                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(text = comentario.autor, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = comentario.texto)
+
+
+                    }
+                }
+            }
+        }
+    }
+}
