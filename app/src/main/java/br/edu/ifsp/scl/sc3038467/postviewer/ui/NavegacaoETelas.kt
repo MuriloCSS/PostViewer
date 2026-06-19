@@ -68,7 +68,17 @@ fun TelaListaPosts(viewModel: PostViewModel, aoClicarNoPost: (Int) -> Unit) {
                         .clickable { aoClicarNoPost(post.id) }
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = post.title, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = post.title,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = post.body,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
                     }
                 }
             }
